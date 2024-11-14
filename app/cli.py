@@ -40,3 +40,18 @@ def delete(index):
     """Delete a note at INDEX."""
     result = app.delete_note(index - 1)
     click.echo(result)
+
+
+@cli.command()
+@click.argument("keyword")
+def search(keyword):
+    """Search for notes containing a keyword."""
+    result = app.search_notes(keyword)
+    click.echo(result)
+
+@cli.command()
+@click.argument("category")
+def view_category(category):
+    """View all notes in a specific category."""
+    result = app.view_by_category(category)
+    click.echo(result)
