@@ -29,3 +29,10 @@ View Notes by Category: python main.py view_category "category"
 - To run tests locally:
   ```bash
   pytest
+
+## CI/CD Pipeline
+
+- The GitHub Actions workflow (`python-ci.yml`) ensures automated testing on every push to the `main` branch.
+- Key updates:
+  - Added `pytest.ini` for simplified test configuration.
+  - Verified that the workflow successfully passes all tests.
