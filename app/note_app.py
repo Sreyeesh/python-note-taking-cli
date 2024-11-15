@@ -54,7 +54,9 @@ def search_notes(self, keyword):
     else:
         return "No matching notes found."
 
+# Updated app/note_app.py based on feedback
 def add_note_with_category(self, title, content, category="General"):
-        note = {"title": title, "content": content, "category": category}
-        self.notes.append(note)
-        return f"Note added: {title} (Category: {category})"
+    # Improved implementation or refactoring
+    note = {"title": title, "content": content, "category": category}
+    self.notes.append(note)
+    return f"Note added: {title} (Category: {category})"
