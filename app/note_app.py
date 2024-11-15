@@ -53,3 +53,8 @@ def search_notes(self, keyword):
         return output.strip()
     else:
         return "No matching notes found."
+
+def add_note_with_category(self, title, content, category="General"):
+        note = {"title": title, "content": content, "category": category}
+        self.notes.append(note)
+        return f"Note added: {title} (Category: {category})"
