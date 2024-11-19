@@ -39,12 +39,15 @@ python main.py  "keyword"
 - Category:
  python main.py view_category "Category"
 ## Testing
+ manual testing or pytest or unittest can be used
 
 ## FAQ
+   This is for the course for students to learn
 
 ## Contributing
 
 We welcome contributions! Fork this repository, create a feature branch, and open a pull request.
 
 ## License
+  We will address the licence later when we discuss things
 
