@@ -1,38 +1,50 @@
-# Python Note-Taking CLI App
+# Project Title
 
-A command-line application for managing notes, allowing users to add, view, search, update, delete, and categorize notes.
-
+## Description
+ It allows users to add, view, search, update, delete, and categorize notes. This is ideal fo rdevelopers,students, and professionals who prefer a terminal based workflow
+ for organizing tasks. 
 ## Features
-- Add notes with title, content, and category
-- View notes by category or search by keyword
-- Update and delete notes
+
+- Add note with a title, content, and category
+- View notes by catehgory or search by keyword
+- Update and delete notes.
 
 ## Installation
-```bash
-gh repo clone your-username/python-note-taking-cli
-cd python-note-taking-cli
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
-pip install -r requirements.txt
+1.  Clone the repository:
+	```bash
+	gh repo Clone your-username/python-notetaking-cli
+	cd python-note-taking -cli
+        ```
+2. Create a virtual enviornment: 
+  
+   python -m venv
+   source venv/bin/activate  #windows : venv\scripts\activate
 
+3.  Install dependencies: 
+    
+    pip install -r requirements.txt
 
-Usage
-Add a Note: python main.py add "Title" "Content" "Category"
-View Notes: python main.py view
-Search Notes: python main.py search "keyword"
-View Notes by Category: python main.py view_category "category"
+## Usage
+- Add a Note:
+   ```bash
+   python main.py add "Title" "Content" "Category"
+   ```
+- View Notes:
+  python main.py view
 
-## Testing NoteApp
+- Search Notes:
+ 
+python main.py  "keyword"
 
-- We use `pytest` for testing the application.
-- The `pytest.ini` file ensures the project root is included in Python’s module search path, simplifying test execution.
-- To run tests locally:
-  ```bash
-  pytest
+- Category:
+ python main.py view_category "Category"
+## Testing
 
-## CI/CD Pipeline
+## FAQ
 
-- The GitHub Actions workflow (`python-ci.yml`) ensures automated testing on every push to the `main` branch.
-- Key updates:
-  - Added `pytest.ini` for simplified test configuration.
-  - Verified that the workflow successfully passes all tests.
+## Contributing
+
+We welcome contributions! Fork this repository, create a feature branch, and open a pull request.
+
+## License
+
