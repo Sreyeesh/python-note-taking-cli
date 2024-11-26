@@ -26,15 +26,18 @@ def add_note(title, content, category):
     click.echo(result)
 
 @cli.command(name="list")
-def list_notes():
+@click.option("--page", default=1, help="Page number to display")
+@click.option("--limit", default=5, help="Number of notes per page")
+def list_notes(page, limit):
     """
-    List all notes.
+    List all notes with pagination.
 
     Example:
-    python main.py list
+    python main.py list --page 1 --limit 5
     """
-    result = note_app.view_notes()
+    result = note_app.view_notes(page=page, limit=limit)
     click.echo(result)
+
 
 @cli.command(name="delete")
 @click.argument("title")
@@ -65,15 +68,23 @@ def search_notes(keyword, category):
 
 
 
-
 @cli.command(name="view-category")
 @click.argument("category")
-def view_notes_by_category(category):
-    """
-    View notes by a specific category.
-
-    Example:
-    python main.py view-category "Personal"
-    """
-    result = note_app.view_notes_by_category(category)
+@click.option("--page", default=1, help="Page number to display")
+@click.option("--limit", default=5, help="Number of notes per page")
+def view_notes_by_category(category, page, limit):
+    """View notes by a specific category with pagination."""
+    result = note_app.view_notes_by_category(category, page=page, limit=limit)
     click.echo(result)
+
+def test_list_with_pagination(runner):
+    for i in range(10):
+        runner.invoke(cli, ["add", f"Note {i+1}", f"Content {i+1}", "--category", "General"])
+    result = runner.invoke(cli, ["list", "--page", "2", "--limit", "5"])
+    assert "Page 2 of 2." in result.output
+
+def test_view_category_with_pagination(runner):
+    for i in range(10):
+        runner.invoke(cli, ["add", f"Note {i+1}", f"Content {i+1}", "--category", "Work"])
+    result = runner.invoke(cli, ["view-category", "Work", "--page", "2", "--limit", "5"])
+    assert "Page 2 of 2." in result.output
