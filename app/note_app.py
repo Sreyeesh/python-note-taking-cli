@@ -89,19 +89,6 @@ class NoteApp:
             ]
         )
 
-    def search_by_tag(self, tag):
-        """Search for notes with a specific tag."""
-        results = [note for note in self.notes if tag.lower() in note.get("tags", [])]
-        if not results:
-            return f"No notes found with the tag '{tag}'."
-
-        return "\n".join(
-            [
-                f"{idx + 1}. Title: {note['title']}\n   Content: {note['content']}\n   Category: {note['category']}\n   Tags: {', '.join(note.get('tags', []))}"
-                for idx, note in enumerate(results)
-            ]
-        )
-
     def sort_notes(self, sort_by="title"):
         """Sort notes by the specified field."""
         if sort_by not in {"title", "category"}:
@@ -121,19 +108,12 @@ class NoteApp:
             if file_format == "txt":
                 with open(input_file, "r") as f:
                     for line_number, line in enumerate(f, start=1):
-                        # Split the line into parts based on the delimiter " | "
                         parts = line.strip().split(" | ")
-                        
-                        # Ensure the line has at least three parts
                         if len(parts) < 3:
                             print(f"Error: Line {line_number} is invalid. Skipping: {line.strip()}")
                             continue
-                        
-                        # Extract the required fields
                         title, content, category = parts[:3]
                         tags = ", ".join(parts[3:]) if len(parts) > 3 else None
-                        
-                        # Add the note
                         self.add_note(
                             title=title.strip(),
                             content=content.strip(),
