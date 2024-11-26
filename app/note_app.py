@@ -80,14 +80,54 @@ class NoteApp:
         )
 
 
-    def view_notes_by_category(self, category):
-        """View notes filtered by a specific category."""
-        results = [note for note in self.notes if note["category"].lower() == category.lower()]
-        if not results:
-            return f"No notes found in category '{category}'."
-        return "\n".join(
+    def view_notes(self, page=1, limit=5):
+        """Return a paginated list of notes."""
+        total_notes = len(self.notes)
+        total_pages = (total_notes + limit - 1) // limit  # Calculate total pages
+        start = (page - 1) * limit
+        end = start + limit
+
+        if start >= total_notes:
+            return f"No notes found on page {page}. Total pages: {total_pages}."
+
+        paginated_notes = self.notes[start:end]
+        notes_str = "\n".join(
             [
-                f"{idx + 1}. Title: {note['title']}\n   Content: {note['content']}\n   Category: {note['category']}"
-                for idx, note in enumerate(results)
+                f"{idx + start + 1}. Title: {note['title']}\n   Content: {note['content']}\n   Category: {note['category']}"
+                for idx, note in enumerate(paginated_notes)
             ]
         )
+        return f"{notes_str}\nPage {page} of {total_pages}."
+
+    def view_notes_by_category(self, category, page=1, limit=5):
+            """Return a paginated list of notes filtered by category."""
+            filtered_notes = [note for note in self.notes if note["category"].lower() == category.lower()]
+            total_notes = len(filtered_notes)
+            total_pages = (total_notes + limit - 1) // limit
+            start = (page - 1) * limit
+            end = start + limit
+
+            if start >= total_notes:
+                return f"No notes found in category '{category}' on page {page}. Total pages: {total_pages}."
+
+            paginated_notes = filtered_notes[start:end]
+            notes_str = "\n".join(
+                [
+                    f"{idx + start + 1}. Title: {note['title']}\n   Content: {note['content']}\n   Category: {note['category']}"
+                    for idx, note in enumerate(paginated_notes)
+                ]
+            )
+            return f"{notes_str}\nPage {page} of {total_pages}."
+    
+    def test_view_notes_with_pagination(app):
+        for i in range(10):
+            app.add_note(f"Note {i+1}", f"Content {i+1}", "General")
+        result = app.view_notes(page=1, limit=5)
+        assert "Page 1 of 2." in result
+
+def test_view_notes_by_category_with_pagination(app):
+    for i in range(10):
+        app.add_note(f"Note {i+1}", f"Content {i+1}", "Work")
+    result = app.view_notes_by_category("Work", page=2, limit=5)
+    assert "Page 2 of 2." in result
+
