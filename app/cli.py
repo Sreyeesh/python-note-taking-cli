@@ -48,17 +48,23 @@ def delete_note(title):
     result = note_app.delete_note(title)
     click.echo(result)
 
+
 @cli.command(name="search")
 @click.argument("keyword")
-def search_notes(keyword):
+@click.option("--category", default=None, help="Filter by category")
+def search_notes(keyword, category):
     """
-    Search for notes containing a specific keyword.
+    Search for notes containing a specific keyword, optionally filtered by category.
 
     Example:
     python main.py search "milk"
+    python main.py search "milk" --category "Personal"
     """
-    result = note_app.search_notes(keyword)
+    result = note_app.search_notes(keyword, category)
     click.echo(result)
+
+
+
 
 @cli.command(name="view-category")
 @click.argument("category")
