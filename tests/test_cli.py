@@ -31,7 +31,14 @@ def test_search_command(runner):
     assert "Grocery List" in result.output
 
 def test_search_command_with_category(runner):
+    """Test searching notes with a keyword and category filter."""
     runner.invoke(cli, ["add", "Grocery List", "Buy milk and eggs", "--category", "Personal"])
     result = runner.invoke(cli, ["search", "milk", "--category", "Personal"])
+    
+    # Ensure the command runs successfully
     assert result.exit_code == 0
+
+    # Ensure the output contains the expected note
+    assert "Grocery List" in result.output
+    assert "Buy milk and eggs" in result.output
     assert "Personal" in result.output

@@ -1,19 +1,13 @@
-# app/note_app.py
-
+import os
+import csv
 import json
-
-# app/note_app.py
 
 class NoteApp:
     def __init__(self, storage_file="notes.json", use_memory=False):
-        """
-        Initialize the NoteApp.
-
-        :param storage_file: Path to the JSON storage file.
-        :param use_memory: If True, use in-memory storage for testing.
-        """
+        """Initialize the NoteApp."""
         self.storage_file = storage_file
         self.use_memory = use_memory
+        # Initialize notes as an empty list or load from the storage file
         self.notes = [] if use_memory else self._load_notes()
 
     def _load_notes(self):
@@ -26,19 +20,25 @@ class NoteApp:
 
     def _save_notes(self):
         """Save notes to the JSON file."""
-        if not self.use_memory:  # Skip saving during tests
+        if not self.use_memory:
             with open(self.storage_file, "w") as f:
                 json.dump(self.notes, f, indent=4)
 
     def add_note(self, title, content, category="General"):
-        """Add a new note and save to storage."""
+        """Add a new note."""
         note = {"title": title, "content": content, "category": category}
         self.notes.append(note)
         self._save_notes()
         return f"Note added: {title} - {content} (Category: {category})"
 
-    # Other methods (view_notes, delete_note, etc.) remain unchanged
-
+    def delete_note(self, title):
+        """Delete a note by title."""
+        for note in self.notes:
+            if note["title"].lower() == title.lower():
+                self.notes.remove(note)
+                self._save_notes()
+                return f"Note with title '{title}' has been deleted."
+        return f"Note with title '{title}' not found."
 
     def view_notes(self):
         """Return a string listing all notes."""
@@ -50,27 +50,19 @@ class NoteApp:
                 for idx, note in enumerate(self.notes)
             ]
         )
-
-    def delete_note(self, title):
-        """Delete a note by title and save changes."""
-        for note in self.notes:
-            if note["title"].lower() == title.lower():
-                self.notes.remove(note)
-                self._save_notes()
-                return f"Note with title '{title}' has been deleted."
-        return f"Note with title '{title}' not found."
-
     def search_notes(self, keyword, category=None):
-        """Search for notes by keyword and optionally filter by category."""
+        """Search for notes containing a specific keyword, optionally filtered by category."""
         results = [
-            note for note in self.notes
+            note
+            for note in self.notes
             if keyword.lower() in note["title"].lower() or keyword.lower() in note["content"].lower()
         ]
-        if category:  # Filter results by category if provided
+
+        if category:
             results = [note for note in results if note["category"].lower() == category.lower()]
 
         if not results:
-            return "No notes found with the given keyword and category."
+            return "No notes found with the given criteria."
         
         return "\n".join(
             [
@@ -80,54 +72,41 @@ class NoteApp:
         )
 
 
-    def view_notes(self, page=1, limit=5):
-        """Return a paginated list of notes."""
-        total_notes = len(self.notes)
-        total_pages = (total_notes + limit - 1) // limit  # Calculate total pages
-        start = (page - 1) * limit
-        end = start + limit
-
-        if start >= total_notes:
-            return f"No notes found on page {page}. Total pages: {total_pages}."
-
-        paginated_notes = self.notes[start:end]
-        notes_str = "\n".join(
+    def view_notes_by_category(self, category):
+        """Return a string listing notes filtered by category."""
+        results = [note for note in self.notes if note["category"].lower() == category.lower()]
+        if not results:
+            return f"No notes found in category '{category}'."
+        return "\n".join(
             [
-                f"{idx + start + 1}. Title: {note['title']}\n   Content: {note['content']}\n   Category: {note['category']}"
-                for idx, note in enumerate(paginated_notes)
+                f"{idx + 1}. Title: {note['title']}\n   Content: {note['content']}\n   Category: {note['category']}"
+                for idx, note in enumerate(results)
             ]
         )
-        return f"{notes_str}\nPage {page} of {total_pages}."
 
-    def view_notes_by_category(self, category, page=1, limit=5):
-            """Return a paginated list of notes filtered by category."""
-            filtered_notes = [note for note in self.notes if note["category"].lower() == category.lower()]
-            total_notes = len(filtered_notes)
-            total_pages = (total_notes + limit - 1) // limit
-            start = (page - 1) * limit
-            end = start + limit
+    def export_notes(self, file_format="txt", output_file="notes.txt"):
+        """Export notes to a file in the specified format."""
+        if not self.notes:
+            return "No notes available to export."
 
-            if start >= total_notes:
-                return f"No notes found in category '{category}' on page {page}. Total pages: {total_pages}."
+        output_dir = os.path.dirname(output_file)
+        if output_dir:
+            os.makedirs(output_dir, exist_ok=True)
 
-            paginated_notes = filtered_notes[start:end]
-            notes_str = "\n".join(
-                [
-                    f"{idx + start + 1}. Title: {note['title']}\n   Content: {note['content']}\n   Category: {note['category']}"
-                    for idx, note in enumerate(paginated_notes)
-                ]
-            )
-            return f"{notes_str}\nPage {page} of {total_pages}."
-    
-    def test_view_notes_with_pagination(app):
-        for i in range(10):
-            app.add_note(f"Note {i+1}", f"Content {i+1}", "General")
-        result = app.view_notes(page=1, limit=5)
-        assert "Page 1 of 2." in result
+        if file_format == "txt":
+            with open(output_file, "w") as f:
+                for idx, note in enumerate(self.notes):
+                    f.write(f"{idx + 1}. Title: {note['title']}\n")
+                    f.write(f"   Content: {note['content']}\n")
+                    f.write(f"   Category: {note['category']}\n\n")
+            return f"Notes successfully exported to {output_file}."
 
-def test_view_notes_by_category_with_pagination(app):
-    for i in range(10):
-        app.add_note(f"Note {i+1}", f"Content {i+1}", "Work")
-    result = app.view_notes_by_category("Work", page=2, limit=5)
-    assert "Page 2 of 2." in result
+        elif file_format == "csv":
+            with open(output_file, "w", newline="") as f:
+                writer = csv.DictWriter(f, fieldnames=["title", "content", "category"])
+                writer.writeheader()
+                writer.writerows(self.notes)
+            return f"Notes successfully exported to {output_file}."
 
+        else:
+            return "Unsupported file format. Please choose 'txt' or 'csv'."
