@@ -60,21 +60,25 @@ class NoteApp:
                 return f"Note with title '{title}' has been deleted."
         return f"Note with title '{title}' not found."
 
-    def search_notes(self, keyword):
-        """Search for notes by a keyword in title or content."""
+    def search_notes(self, keyword, category=None):
+        """Search for notes by keyword and optionally filter by category."""
         results = [
-            note
-            for note in self.notes
+            note for note in self.notes
             if keyword.lower() in note["title"].lower() or keyword.lower() in note["content"].lower()
         ]
+        if category:  # Filter results by category if provided
+            results = [note for note in results if note["category"].lower() == category.lower()]
+
         if not results:
-            return "No notes found with that keyword."
+            return "No notes found with the given keyword and category."
+        
         return "\n".join(
             [
                 f"{idx + 1}. Title: {note['title']}\n   Content: {note['content']}\n   Category: {note['category']}"
                 for idx, note in enumerate(results)
             ]
         )
+
 
     def view_notes_by_category(self, category):
         """View notes filtered by a specific category."""
