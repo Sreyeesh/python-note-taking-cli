@@ -33,12 +33,14 @@ class NoteApp:
             raise ValueError(f"A note with the title '{title}' already exists.")
 
         # Add the new note
-        self.notes.append({
-            "title": title,
-            "content": content,
-            "category": category,
-            "tags": tags or []
-        })
+        self.notes.append(
+            {
+                "title": title,
+                "content": content,
+                "category": category,
+                "tags": tags or [],
+            }
+        )
         return f"Note added: {title} - {content} (Category: {category}, Tags: {', '.join(tags or [])})"
 
     def delete_note(self, title):
