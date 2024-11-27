@@ -1,2 +1,0 @@
-Shopping List | Buy bread and milk | Personal | grocery,shopping
-Project Plan | Outline project deliverables | Work | priority,deadline

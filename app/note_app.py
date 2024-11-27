@@ -1,6 +1,7 @@
 import os
 import json
 
+
 class NoteApp:
     def __init__(self, storage_file="data/notes.json", use_memory=False):
         """Initialize the NoteApp."""
@@ -27,17 +28,45 @@ class NoteApp:
                 json.dump(self.notes, f, indent=4)
 
     def add_note(self, title, content, category="General", tags=None):
-        """Add a new note with optional tags."""
+        """
+        Add a new note with optional tags.
+
+        Args:
+            title (str): Title of the note.
+            content (str): Content of the note.
+            category (str, optional): Category for the note.
+                Defaults to "General".
+            tags (str, optional): Comma-separated tags. Defaults to None.
+
+        Returns:
+            str: Confirmation message.
+        """
         if not title.strip():
             raise ValueError("Title cannot be empty.")
         tags = [tag.strip().lower() for tag in (tags or "").split(",") if tag.strip()]
-        note = {"title": title, "content": content, "category": category, "tags": tags}
+        note = {
+            "title": title,
+            "content": content,
+            "category": category,
+            "tags": tags,
+        }
         self.notes.append(note)
         self._save_notes()
-        return f"Note added: {title} - {content} (Category: {category}, Tags: {', '.join(tags)})"
+        return (
+            f"Note added: {title} - {content} "
+            f"(Category: {category}, Tags: {', '.join(tags)})"
+        )
 
     def delete_note(self, title):
-        """Delete a note by title."""
+        """
+        Delete a note by title.
+
+        Args:
+            title (str): Title of the note to delete.
+
+        Returns:
+            str: Confirmation message or error if not found.
+        """
         if not title.strip():
             raise ValueError("Title cannot be empty.")
         for note in self.notes:
@@ -52,11 +81,11 @@ class NoteApp:
         Return a paginated list of notes.
 
         Args:
-            page (int): The page number to display.
-            limit (int): The number of notes per page.
+            page (int): Page number to display.
+            limit (int): Number of notes per page.
 
         Returns:
-            str: A formatted string containing the paginated notes.
+            str: Paginated notes or a no results message.
         """
         total_notes = len(self.notes)
         total_pages = (total_notes + limit - 1) // limit
@@ -69,7 +98,10 @@ class NoteApp:
         paginated_notes = self.notes[start:end]
         notes_str = "\n".join(
             [
-                f"{idx + start + 1}. Title: {note['title']}\n   Content: {note['content']}\n   Category: {note['category']}\n   Tags: {', '.join(note.get('tags', []))}"
+                f"{idx + start + 1}. Title: {note['title']}\n"
+                f"   Content: {note['content']}\n"
+                f"   Category: {note['category']}\n"
+                f"   Tags: {', '.join(note.get('tags', []))}"
                 for idx, note in enumerate(paginated_notes)
             ]
         )
