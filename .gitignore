@@ -12,3 +12,7 @@ venv/
 
 # Logs and temporary files
 *.log
+
+
+#notes
+notes.json
