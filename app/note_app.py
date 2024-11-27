@@ -28,20 +28,38 @@ class NoteApp:
                 json.dump(self.notes, f, indent=4)
 
     def add_note(self, title, content, category="General", tags=None):
+    # Validate title
+        if not title or title.isspace():
+            raise ValueError("Note title cannot be empty.")
+
         # Check if a note with the same title already exists
         if any(note["title"] == title for note in self.notes):
             raise ValueError(f"A note with the title '{title}' already exists.")
 
+        # Process tags
+        processed_tags = []
+        if tags:
+            # If tags is a string, split and strip
+            if isinstance(tags, str):
+                processed_tags = [tag.strip() for tag in tags.split(',') if tag.strip()]
+            # If tags is already a list, use it directly
+            elif isinstance(tags, list):
+                processed_tags = tags
+
         # Add the new note
-        self.notes.append(
-            {
-                "title": title,
-                "content": content,
-                "category": category,
-                "tags": tags or [],
-            }
-        )
-        return f"Note added: {title} - {content} (Category: {category}, Tags: {', '.join(tags or [])})"
+        new_note = {
+            "title": title,
+            "content": content,
+            "category": category,
+            "tags": processed_tags,
+        }
+        self.notes.append(new_note)
+        
+        # Save notes if not in memory mode
+        if not self.use_memory:
+            self._save_notes()
+
+        return new_note
 
     def delete_note(self, title):
         """
