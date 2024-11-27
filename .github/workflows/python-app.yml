@@ -14,13 +14,13 @@ jobs:
 
     steps:
       - name: Check out code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3  # Updated to v3 for newer features
 
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4  # Updated to v4
         with:
-          python-version: 3.10  # Use a version from the manifest that is available
-      
+          python-version: '3.10'  # Use quotes for string representation
+          cache: 'pip'  # Optional: enables caching of pip dependencies
 
       - name: Install dependencies
         run: |
