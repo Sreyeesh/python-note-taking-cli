@@ -1,0 +1,14 @@
+README.md
+setup.py
+app/__init__.py
+app/cli.py
+app/main.py
+app/note_app.py
+note_taking_cli.egg-info/PKG-INFO
+note_taking_cli.egg-info/SOURCES.txt
+note_taking_cli.egg-info/dependency_links.txt
+note_taking_cli.egg-info/entry_points.txt
+note_taking_cli.egg-info/requires.txt
+note_taking_cli.egg-info/top_level.txt
+tests/test_cli.py
+tests/test_note_app.py

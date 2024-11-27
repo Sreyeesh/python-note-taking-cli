@@ -1,0 +1,6 @@
+Metadata-Version: 2.1
+Name: note-taking-cli
+Version: 1.0.0
+Summary: A CLI app for managing notes.
+Author: Sreyeesh Garimella
+Requires-Dist: click

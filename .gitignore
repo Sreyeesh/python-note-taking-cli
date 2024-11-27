@@ -16,3 +16,6 @@ venv/
 
 #notes
 notes.json
+"build/" 
+"dist/" 
+"*.egg-info/" 

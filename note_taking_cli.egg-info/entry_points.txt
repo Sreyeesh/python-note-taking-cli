@@ -1,0 +1,2 @@
+[console_scripts]
+note-cli = app.cli:cli
