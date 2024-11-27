@@ -28,7 +28,22 @@ class NoteApp:
                 json.dump(self.notes, f, indent=4)
 
     def add_note(self, title, content, category="General", tags=None):
-    # Validate title
+        """
+        Add a new note to the collection.
+
+        Args:
+            title (str): Title of the note.
+            content (str): Content of the note.
+            category (str, optional): Category of the note. Defaults to "General".
+            tags (str or list, optional): Tags for the note. Defaults to None.
+
+        Returns:
+            dict: The newly added note.
+
+        Raises:
+            ValueError: If the title is empty or a note with the same title exists.
+        """
+        # Validate title
         if not title or title.isspace():
             raise ValueError("Note title cannot be empty.")
 
@@ -41,7 +56,7 @@ class NoteApp:
         if tags:
             # If tags is a string, split and strip
             if isinstance(tags, str):
-                processed_tags = [tag.strip() for tag in tags.split(',') if tag.strip()]
+                processed_tags = [tag.strip() for tag in tags.split(",") if tag.strip()]
             # If tags is already a list, use it directly
             elif isinstance(tags, list):
                 processed_tags = tags
@@ -54,7 +69,7 @@ class NoteApp:
             "tags": processed_tags,
         }
         self.notes.append(new_note)
-        
+
         # Save notes if not in memory mode
         if not self.use_memory:
             self._save_notes()
@@ -70,14 +85,19 @@ class NoteApp:
 
         Returns:
             str: Confirmation message or error if not found.
+
+        Raises:
+            ValueError: If the title is empty.
         """
         if not title.strip():
             raise ValueError("Title cannot be empty.")
+
         for note in self.notes:
             if note["title"].lower() == title.lower():
                 self.notes.remove(note)
                 self._save_notes()
                 return f"Note with title '{title}' has been deleted."
+
         return f"Note with title '{title}' not found."
 
     def view_notes(self, page=1, limit=5):
@@ -85,8 +105,8 @@ class NoteApp:
         Return a paginated list of notes.
 
         Args:
-            page (int): Page number to display.
-            limit (int): Number of notes per page.
+            page (int): Page number to display. Defaults to 1.
+            limit (int): Number of notes per page. Defaults to 5.
 
         Returns:
             str: Paginated notes or a no results message.
