@@ -26,9 +26,5 @@ jobs:
           python -m pip install --upgrade pip
           pip install black
 
-      - name: Check formatting with Black
-        run: |
-          black --check app tests
-        continue-on-error: true
 
 
