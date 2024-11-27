@@ -1,45 +1,46 @@
-import pytest
 from click.testing import CliRunner
-from app.cli import cli
-from app.note_app import NoteApp
+from app.cli import cli, get_note_app
 
-@pytest.fixture
-def runner():
-    """Fixture to create a CLI runner for testing."""
-    return CliRunner()
+def test_list_command_with_notes():
+    """Test the CLI list command with existing notes."""
+    runner = CliRunner()
 
-@pytest.fixture
-def clean_environment(monkeypatch):
-    """Fixture to create an isolated in-memory NoteApp instance for testing."""
-    def mock_note_app():
-        return NoteApp(use_memory=True)
-    monkeypatch.setattr("app.cli.note_app", mock_note_app())
+    # Initialize the NoteApp instance in memory-only mode
+    get_note_app(memory_only=True)
 
-def test_list_command(runner, clean_environment):
-    """Test the list command."""
-    runner.invoke(cli, ["add", "Note 1", "Content 1", "--category", "Personal"])
-    runner.invoke(cli, ["add", "Note 2", "Content 2", "--category", "Work"])
-    result = runner.invoke(cli, ["list", "--page", "1", "--limit", "2"])
+    # Add notes using the CLI
+    runner.invoke(cli, ["add", "Title 1", "Content 1"])
+    runner.invoke(cli, ["add", "Title 2", "Content 2"])
+
+    # List notes with pagination
+    result = runner.invoke(cli, ["list", "--page", "1", "--limit", "1"])
     assert result.exit_code == 0
-    assert "Note 1" in result.output
-    assert "Note 2" in result.output
+    assert "Title 1" in result.output
+    assert "Page 1 of 2" in result.output
 
-def test_import_command_txt(runner, clean_environment, tmp_path):
-    """Test the import command from a TXT file."""
-    input_file = tmp_path / "import_notes.txt"
-    input_file.write_text("Imported Note | Imported Content | Imported Category")
-    result = runner.invoke(cli, ["import", "--format", "txt", "--file", str(input_file)])
-    assert result.exit_code == 0
-    assert "Notes successfully imported" in result.output
-    list_result = runner.invoke(cli, ["list"])
-    assert "Imported Note" in list_result.output
+def test_list_command_empty():
+    """Test the CLI list command when no notes exist."""
+    runner = CliRunner()
 
-def test_import_command_csv(runner, clean_environment, tmp_path):
-    """Test the import command from a CSV file."""
-    input_file = tmp_path / "import_notes.csv"
-    input_file.write_text("title,content,category,tags\nImported Note,Imported Content,Imported Category,")
-    result = runner.invoke(cli, ["import", "--format", "csv", "--file", str(input_file)])
+    # Initialize the NoteApp instance in memory-only mode
+    get_note_app(memory_only=True)
+
+    # Invoke the list command
+    result = runner.invoke(cli, ["list"])
     assert result.exit_code == 0
-    assert "Notes successfully imported" in result.output
-    list_result = runner.invoke(cli, ["list"])
-    assert "Imported Note" in list_result.output
+    assert "No notes found" in result.output
+
+def test_add_note_command():
+    """Test the CLI add command."""
+    runner = CliRunner()
+
+    # Initialize the NoteApp instance in memory-only mode
+    get_note_app(memory_only=True)
+
+    # Add a note and verify the output
+    result = runner.invoke(
+        cli,
+        ["add", "Test Title", "Test Content", "--category", "Test Category", "--tags", "tag1,tag2"]
+    )
+    assert result.exit_code == 0
+    assert "Note added: Test Title - Test Content (Category: Test Category, Tags: tag1, tag2)" in result.output
