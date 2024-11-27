@@ -1,7 +1,24 @@
-# Repository Cleanup Tasks
+# TODO
 
-- [x] Move data files (e.g., import_notes.csv, notes.csv) to a dedicated data/ directory.
-- [x] Move main.py to the app/ directory to keep core application logic in one place.
-- [x] Clean up temporary and cache files (__pycache__, .pytest_cache).
-- [x] Update .gitignore to exclude unnecessary files and directories.
-- [x] Update README.md to reflect the new project structure.
+## Current Tasks
+- [ ] Implement Continuous Integration (CI) using GitHub Actions.
+- [ ] Configure CI workflow to automate the following:
+  - Run Black for code formatting checks.
+  - Run Flake8 for linting.
+  - Execute Pytest to verify the test suite.
+- [ ] Ensure CI workflows trigger on:
+  - Code pushes to `main` or `feature/*` branches.
+  - Pull request creation and updates.
+- [ ] Verify that all CI steps pass without errors.
+
+## Completed Tasks
+- [x] Refactored codebase to adhere to PEP 8 standards.
+- [x] Applied Black for code formatting.
+- [x] Resolved Flake8 linting errors.
+- [x] Organized test files and verified test coverage.
+- [x] Updated `.flake8` configuration to align with Black.
+
+## Future Enhancements
+- [ ] Integrate code coverage analysis into the CI pipeline.
+- [ ] Automate deployment for staging and production environments.
+- [ ] Add dependency vulnerability checks using `pip-audit`.
