@@ -14,18 +14,32 @@ jobs:
 
     steps:
       - name: Check out code
-        uses: actions/checkout@v3  # Updated to v3 for newer features
+        uses: actions/checkout@v3
+        with:
+          # This allows the workflow to push formatting changes
+          fetch-depth: 0
 
       - name: Set up Python
-        uses: actions/setup-python@v4  # Updated to v4
+        uses: actions/setup-python@v4
         with:
-          python-version: '3.10'  # Use quotes for string representation
-          cache: 'pip'  # Optional: enables caching of pip dependencies
+          python-version: '3.10'
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install black pytest
+
+      - name: Format code with Black
+        run: |
+          black app tests
+
+      - name: Commit formatting changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git diff --quiet && git diff --staged --quiet || git commit -m "Apply Black formatting"
+          git push
 
       - name: Run black --check
         run: black --check app tests
