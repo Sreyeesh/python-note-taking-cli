@@ -56,7 +56,9 @@ class NoteApp:
         if tags:
             # If tags is a string, split and strip
             if isinstance(tags, str):
-                processed_tags = [tag.strip() for tag in tags.split(",") if tag.strip()]
+                processed_tags = [
+                    tag.strip() for tag in tags.split(",") if tag.strip()
+                ]
             # If tags is already a list, use it directly
             elif isinstance(tags, list):
                 processed_tags = tags
