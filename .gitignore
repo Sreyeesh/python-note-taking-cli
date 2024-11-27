@@ -1,3 +1,14 @@
-venv/
+# Python cache and compiled files
 __pycache__/
-notes.json
+*.pyc
+*.pyo
+
+# Testing files
+.pytest_cache/
+.coverage
+
+# Environment files
+venv/
+
+# Logs and temporary files
+*.log
