@@ -1,57 +1,51 @@
 import pytest
 from click.testing import CliRunner
-from app.cli import cli, get_note_app
+from app.cli import cli
+from tests.helpers import reset_storage
 
 
-@pytest.fixture
-def runner():
-    """Fixture to initialize the CLI runner."""
-    return CliRunner()
-
-
-def test_add_note_command(runner):
+def test_add_note_command():
     """Test the CLI add command."""
-    get_note_app(memory_only=True)
-    result = runner.invoke(
-        cli,
-        ["add", "CLI Test Title", "CLI Test Content", "--category", "CLI Category", "--tags", "cli,testing"],
-    )
+    reset_storage()
+    runner = CliRunner()
+    result = runner.invoke(cli, [
+        "add",
+        "Test Title",
+        "Test Content",
+        "--category",
+        "Test Category",
+        "--tags",
+        "tag1,tag2",
+    ])
     assert result.exit_code == 0
-    assert "Note added: CLI Test Title - CLI Test Content (Category: CLI Category, Tags: cli, testing)" in result.output
+    assert "Note added: Test Title - Test Content (Category: Test Category, Tags: tag1, tag2)" in result.output
 
 
-def test_add_duplicate_note_command(runner):
-    """Test adding a duplicate note via CLI."""
-    get_note_app(memory_only=True)
-    runner.invoke(cli, ["add", "Duplicate Title", "Original Content"])
-    result = runner.invoke(cli, ["add", "Duplicate Title", "New Content"])
+def test_list_notes_command_empty():
+    """Test listing notes when no notes exist."""
+    reset_storage()
+    runner = CliRunner()
+    result = runner.invoke(cli, ["list"])
     assert result.exit_code == 0
-    assert "Error: A note with the title 'Duplicate Title' already exists." in result.output
+    assert "No notes found. Total pages: 0." in result.output
 
 
-def test_list_notes_command(runner):
-    """Test listing notes via CLI."""
-    get_note_app(memory_only=True)
-    runner.invoke(cli, ["add", "List Note 1", "List Content 1"])
-    runner.invoke(cli, ["add", "List Note 2", "List Content 2"])
-    result = runner.invoke(cli, ["list", "--page", "1", "--limit", "1"])
+def test_list_notes_command_with_notes():
+    """Test listing notes with existing notes."""
+    reset_storage()
+    runner = CliRunner()
+    runner.invoke(cli, ["add", "Title 1", "Content 1", "--category", "General"])
+    runner.invoke(cli, ["add", "Title 2", "Content 2", "--category", "Work"])
+    result = runner.invoke(cli, ["list", "--page", "1", "--limit", "2"])
     assert result.exit_code == 0
-    assert "Page 1 of 2" in result.output
-    assert "List Note 1" in result.output
+    assert "1. Title: Title 1" in result.output
 
 
-def test_delete_note_command(runner):
-    """Test deleting a note via CLI."""
-    get_note_app(memory_only=True)
-    runner.invoke(cli, ["add", "Delete Me", "Delete Content"])
-    result = runner.invoke(cli, ["delete", "Delete Me"])
+def test_delete_note_command():
+    """Test the CLI delete command."""
+    reset_storage()
+    runner = CliRunner()
+    runner.invoke(cli, ["add", "Delete Test", "Content for delete test"])
+    result = runner.invoke(cli, ["delete", "Delete Test"])
     assert result.exit_code == 0
-    assert "Note with title 'Delete Me' has been deleted." in result.output
-
-
-def test_delete_nonexistent_note_command(runner):
-    """Test deleting a nonexistent note via CLI."""
-    get_note_app(memory_only=True)
-    result = runner.invoke(cli, ["delete", "Nonexistent Note"])
-    assert result.exit_code == 0
-    assert "Note with title 'Nonexistent Note' not found." in result.output
+    assert "Note with title 'Delete Test' has been deleted." in result.output

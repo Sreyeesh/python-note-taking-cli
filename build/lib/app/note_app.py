@@ -3,56 +3,49 @@ import json
 
 
 class NoteApp:
-    def __init__(self, storage_file="data/notes.json", use_memory=False):
+    def __init__(self, storage_file=None, use_memory=False):
         """Initialize the NoteApp."""
-        base_dir = os.path.expanduser("~/.note-cli")  # Store in user's home directory
-        self.storage_file = os.path.join(base_dir, storage_file)  # Path to notes.json
         self.use_memory = use_memory
-        self.notes = [] if use_memory else self._load_notes()
+        self.notes = []
+
+        if not use_memory:
+            base_dir = os.path.expanduser("~/.note-cli/data")
+            os.makedirs(base_dir, exist_ok=True)
+            self.storage_file = storage_file or os.path.join(base_dir, "notes.json")
+            self.notes = self._load_notes()
 
     def _load_notes(self):
-        """Load notes from the JSON file."""
-        print(f"Loading notes from: {self.storage_file}")
+        """Load notes from the storage file."""
         try:
             with open(self.storage_file, "r") as f:
-                notes = json.load(f)
-                for note in notes:
-                    note.setdefault("tags", [])
-                return notes
-        except FileNotFoundError:
-            print(f"Storage file not found: {self.storage_file}. Returning an empty list.")
+                return json.load(f)
+        except (FileNotFoundError, json.JSONDecodeError):
             return []
 
     def _save_notes(self):
-        """Save notes to the JSON file."""
-        print(f"Saving notes to: {self.storage_file}")
-        os.makedirs(os.path.dirname(self.storage_file), exist_ok=True)
-        with open(self.storage_file, "w") as f:
-            json.dump(self.notes, f, indent=4)
-        print(f"Notes saved: {self.notes}")
+        """Save notes to the storage file."""
+        if not self.use_memory:
+            with open(self.storage_file, "w") as f:
+                json.dump(self.notes, f, indent=4)
 
     def add_note(self, title, content, category="General", tags=None):
         """Add a new note."""
-        if not title.strip():
-            raise ValueError("Title cannot be empty.")
-
-        if any(note["title"].lower() == title.lower() for note in self.notes):
+        if any(note["title"] == title for note in self.notes):
             raise ValueError(f"A note with the title '{title}' already exists.")
-
-        new_note = {
+        note = {
             "title": title,
             "content": content,
             "category": category,
             "tags": tags or []
         }
-        self.notes.append(new_note)
+        self.notes.append(note)
         self._save_notes()
-        return f"Note added: {title} - {content} (Category: {category}, Tags: {', '.join(tags or [])})"
+        return f"Note added: {title} - {content} (Category: {category}, Tags: {', '.join(note['tags'])})"
 
     def delete_note(self, title):
         """Delete a note by title."""
         for note in self.notes:
-            if note["title"].lower() == title.lower():
+            if note["title"] == title:
                 self.notes.remove(note)
                 self._save_notes()
                 return f"Note with title '{title}' has been deleted."
@@ -64,6 +57,9 @@ class NoteApp:
         total_pages = (total_notes + limit - 1) // limit
         start = (page - 1) * limit
         end = start + limit
+
+        if total_notes == 0:
+            return f"No notes found. Total pages: {total_pages}."
 
         if start >= total_notes:
             return f"No notes found on page {page}. Total pages: {total_pages}."
