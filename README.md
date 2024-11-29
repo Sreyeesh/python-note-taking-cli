@@ -1,210 +1,174 @@
-Here’s the final **README.md** file for the project, reflecting all updates made in Section 7. This includes the latest features, usage instructions, persistent storage details, and testing information.
+
+
+# **Note-Taking CLI**
+
+A lightweight, efficient, and user-friendly command-line interface (CLI) application for managing your notes. The app supports note categorization, tagging, and persistent storage, offering a streamlined and productive workflow for users.
 
 ---
 
-### **Final `README.md`**
-
-```markdown
-# Python Note-Taking CLI App
-
-A command-line application for managing notes. This tool is ideal for developers, students, and professionals who prefer a terminal-based workflow to organize their tasks.
-
----
-
-## Features
-
-- Add notes with a title, content, and category.
-- View all notes or filter notes by category.
-- Search for notes containing specific keywords.
-- Delete notes by their title.
-- Persistent storage using `notes.json`.
+## **Features**
+- **Create Notes:** Add notes with titles, content, categories, and optional tags.
+- **View Notes:** List all notes with pagination support.
+- **Delete Notes:** Remove notes by title.
+- **Persistent Storage:** Saves notes in a JSON file located in the user's home directory for easy access and privacy.
+- **Robust Codebase:** Follows best practices for maintainable and reusable code.
+- **Linting and Formatting:** Integrated with tools like `flake8` and `black` to ensure clean, readable code.
 
 ---
 
-## Installation
+## **Repository Structure**
 
-### Clone the Repository
+Below is the organized structure of the repository, designed for clarity and professionalism.
+
+```plaintext
+python-note-taking-cli/
+│
+├── app/                     # Application logic
+│   ├── __init__.py          # Package initializer
+│   ├── cli.py               # CLI commands
+│   ├── main.py              # Application entry point
+│   └── note_app.py          # Core note management functionality
+│
+├── tests/                   # Test suite
+│   ├── __init__.py          # Test package initializer
+│   ├── test_cli.py          # Tests for CLI commands
+│   └── test_note_app.py     # Tests for the note management module
+│
+├── .github/                 # GitHub workflows
+│   └── workflows/
+│       └── python-package.yml  # CI/CD workflow for linting and testing
+│
+├── data/                    # Directory for persistent data
+│   └── notes.json           # JSON file for storing notes (auto-generated)
+│
+├── dist/                    # Distribution files (generated during build)
+│   ├── note_taking_cli-1.0.0-py3-none-any.whl
+│   └── note_taking_cli-1.0.0.tar.gz
+│
+├── .gitignore               # Git ignore file for untracked files
+├── .flake8                  # Configuration file for flake8
+├── pytest.ini               # Configuration file for pytest
+├── README.md                # Project documentation (you are here)
+├── requirements.txt         # List of dependencies
+├── setup.py                 # Setup script for packaging and installation
+└── LICENSE                  # Project license
+```
+
+---
+
+## **Installation**
+
+### **1. Clone the Repository**
 ```bash
-git clone https://github.com/your-username/python-note-taking-cli.git
+git clone https://github.com/Sreyeesh/python-note-taking-cli.git
 cd python-note-taking-cli
 ```
 
-### Set Up the Virtual Environment
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
+### **2. Create and Activate a Virtual Environment**
+- On **Windows**:
+  ```bash
+  python -m venv venv
+  .\venv\Scripts\activate
+  ```
 
-### Install Dependencies
+- On **macOS/Linux**:
+  ```bash
+  python3 -m venv venv
+  source venv/bin/activate
+  ```
+
+### **3. Install Dependencies**
 ```bash
 pip install -r requirements.txt
 ```
 
----
-
-## Usage
-
-### Add a Note
+### **4. Install the CLI Globally**
 ```bash
-python main.py add "Title" "Content" --category "Category"
+pip install .
 ```
-- **Example**:
-  ```bash
-  python main.py add "Shopping List" "Buy milk and eggs" --category "Personal"
-  ```
-
-### List All Notes
-```bash
-python main.py list
-```
-
-- **Example Output**:
-  ```plaintext
-  1. Title: Shopping List
-     Content: Buy milk and eggs
-     Category: Personal
-  ```
-
-### Search for Notes
-```bash
-python main.py search "Keyword"
-```
-- **Example**:
-  ```bash
-  python main.py search "milk"
-  ```
-  **Output**:
-  ```plaintext
-  1. Title: Shopping List
-     Content: Buy milk and eggs
-     Category: Personal
-  ```
-
-### View Notes by Category
-```bash
-python main.py view-category "Category"
-```
-- **Example**:
-  ```bash
-  python main.py view-category "Personal"
-  ```
-  **Output**:
-  ```plaintext
-  1. Title: Shopping List
-     Content: Buy milk and eggs
-     Category: Personal
-  ```
-
-### Delete a Note
-```bash
-python main.py delete "Title"
-```
-- **Example**:
-  ```bash
-  python main.py delete "Shopping List"
-  ```
-  **Output**:
-  ```plaintext
-  Note with title 'Shopping List' has been deleted.
-  ```
 
 ---
 
-## Persistent Storage
+## **Usage**
 
-All notes are saved to a `notes.json` file in the project directory. This file is automatically updated whenever notes are added, modified, or deleted.
+### **General Command Syntax**
+```bash
+note-cli [OPTIONS] COMMAND [ARGS]...
+```
 
-- **Backup or Reset**:
-  - To back up your notes, copy the `notes.json` file to another location.
-  - To reset the application, delete the `notes.json` file:
-    ```bash
-    rm notes.json
-    ```
+### **Available Commands**
+1. **Add a Note**
+   ```bash
+   note-cli add "Title" "Content" --category "Category" --tags "tag1,tag2"
+   ```
+   Example:
+   ```bash
+   note-cli add "Meeting Notes" "Discuss Q4 strategy." --category "Work" --tags "urgent,team"
+   ```
+   **Output:**
+   ```
+   Note added: Meeting Notes - Discuss Q4 strategy. (Category: Work, Tags: urgent, team)
+   ```
+
+2. **List Notes**
+   ```bash
+   note-cli list
+   ```
+   **Output:**
+   ```
+   1. Title: Meeting Notes
+      Content: Discuss Q4 strategy.
+      Category: Work
+      Tags: urgent, team
+   Page 1 of 1.
+   ```
+
+3. **Delete a Note**
+   ```bash
+   note-cli delete "Title"
+   ```
+   Example:
+   ```bash
+   note-cli delete "Meeting Notes"
+   ```
+   **Output:**
+   ```
+   Note with title 'Meeting Notes' has been deleted.
+   ```
 
 ---
 
-## Testing
+## **Development and Contribution**
 
-### Run Automated Tests
-We use `pytest` for automated testing. To run the tests, execute:
+### **Run Tests**
+Ensure all features work as expected:
 ```bash
 pytest
 ```
 
-### Coverage Report (Optional)
-To measure test coverage, install `pytest-cov` and run:
+### **Lint and Format Code**
+Run `flake8` and `black` to ensure the code adheres to Python best practices:
 ```bash
-pip install pytest-cov
-pytest --cov=app
+flake8 app tests
+black app tests
 ```
 
-**Example Output**:
-```plaintext
----------- coverage: platform linux, python 3.10 ----------
-Name                  Stmts   Miss  Cover
------------------------------------------
-app/note_app.py         50      0   100%
-app/cli.py              30      0   100%
------------------------------------------
-TOTAL                   80      0   100%
+### **Building the Project**
+To package the application for distribution:
+```bash
+python setup.py sdist bdist_wheel
 ```
 
 ---
 
-## Contributing
-
-We welcome contributions! Follow these steps to contribute:
-
-1. Fork the repository.
-2. Create a new branch:
-   ```bash
-   git checkout -b feature/your-feature
-   ```
-3. Commit your changes:
-   ```bash
-   git add .
-   git commit -m "feat: Add your feature"
-   ```
-4. Push to your branch:
-   ```bash
-   git push origin feature/your-feature
-   ```
-5. Open a pull request.
+## **Known Issues**
+- **Notes not being saved:** Ensure you have write access to the directory `~/.note-cli/data/`.
+- **Command not recognized:** Verify the installation and that `pip install .` was run globally.
 
 ---
 
-## License
-
+## **License**
 This project is licensed under the MIT License. See the `LICENSE` file for details.
 
 ---
 
-## Acknowledgments
-
-Special thanks to the open-source community for their inspiration and contributions!
-```
-
----
-
-### **Key Updates in the README**
-
-1. **Persistent Storage**:
-   - Added a detailed explanation of the `notes.json` file for saving notes.
-   - Provided instructions for backing up or resetting the notes.
-
-2. **Usage Examples**:
-   - Updated examples for all commands, including `view-category`.
-
-3. **Testing Instructions**:
-   - Included instructions for running automated tests with `pytest`.
-   - Added optional coverage testing using `pytest-cov`.
-
-4. **Contributing Guidelines**:
-   - Included steps for forking, creating branches, and submitting pull requests.
-
-5. **License Section**:
-   - Placeholder added for the MIT License.
-
----
-
-This README now fully reflects the latest features and functionality of the app, providing a professional and comprehensive guide for users and contributors. Let me know if further adjustments are needed!
