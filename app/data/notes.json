@@ -1,0 +1,29 @@
+[
+    {
+        "title": "Test Note",
+        "content": "This is a test note for validation.",
+        "category": "General",
+        "tags": []
+    },
+    {
+        "title": "Work Note",
+        "content": "Complete the report by Friday.",
+        "category": "Work",
+        "tags": [
+            "urgent",
+            "important"
+        ]
+    },
+    {
+        "title": "Work Note",
+        "content": "Duplicate entry.",
+        "category": "General",
+        "tags": []
+    },
+    {
+        "title": "Work Note",
+        "content": "Duplicate entry.",
+        "category": "General",
+        "tags": []
+    }
+]

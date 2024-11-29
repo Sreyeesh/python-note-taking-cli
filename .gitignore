@@ -14,23 +14,16 @@ venv/
 *.log
 
 
-#notes
-notes.json
-"build/" 
-"dist/" 
-"*.egg-info/" 
-"build/" 
-"dist/" 
-"*.egg-info/" 
-dist/note_taking_cli-1.0.0-py3-none-any.whl
-build/lib/app/cli.py
-build/lib/app/main.py
-build/lib/app/note_app.py
-dist/note_taking_cli-1.0.0-py3-none-any.whl
-dist/note_taking_cli-1.0.0.tar.gz
-build/lib/app/cli.py
-build/lib/app/main.py
-build/lib/app/note_app.py
-dist/note_taking_cli-1.0.0-py3-none-any.whl
-dist/note_taking_cli-1.0.0.tar.gz
-*.whl
+
+# Ignore distribution and build artifacts
+dist/
+build/
+*.egg-info
+
+# Ignore data files (dynamically generated)
+data/notes.json
+
+# Ignore temporary or system files
+.DS_Store
+*.pyc
+__pycache__/
