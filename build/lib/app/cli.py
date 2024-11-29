@@ -1,16 +1,14 @@
 import click
-from app.note_app import NoteApp  # Use absolute import
+from app.note_app import NoteApp
 
-# Use a global note_app instance by default
-note_app = NoteApp()
-
+note_app_instance = None  # Use a global instance to ensure a single NoteApp is used
 
 def get_note_app(memory_only=False):
     """Retrieve the NoteApp instance, optionally in memory-only mode."""
-    global note_app
-    if memory_only:
-        note_app = NoteApp(use_memory=True)
-    return note_app
+    global note_app_instance
+    if note_app_instance is None or memory_only:
+        note_app_instance = NoteApp(use_memory=memory_only)
+    return note_app_instance
 
 
 @click.group()
@@ -18,7 +16,6 @@ def get_note_app(memory_only=False):
 def cli(memory_only):
     """Note Taking CLI Application."""
     get_note_app(memory_only)
-
 
 @cli.command()
 @click.argument("title")
@@ -29,27 +26,22 @@ def add(title, content, category, tags):
     """Add a new note."""
     try:
         tags_list = [tag.strip() for tag in tags.split(",") if tag.strip()]
-        result = note_app.add_note(title, content, category, tags_list)
+        result = get_note_app().add_note(title, content, category, tags_list)
         click.echo(result)
     except ValueError as e:
         click.echo(f"Error: {e}")
 
-
 @cli.command(name="list")
-@click.option("--page", default=1, help="Page number to display")
-@click.option("--limit", default=5, help="Number of notes per page")
+@click.option("--page", default=1, help="Page number to display.")
+@click.option("--limit", default=5, help="Number of notes per page.")
 def list_notes(page, limit):
     """List notes with pagination."""
-    result = note_app.view_notes(page=page, limit=limit)
+    result = get_note_app().view_notes(page=page, limit=limit)
     click.echo(result)
-
 
 @cli.command(name="delete")
 @click.argument("title")
-def delete_note(title):
+def delete(title):
     """Delete a note by title."""
-    try:
-        result = note_app.delete_note(title)
-        click.echo(result)
-    except ValueError as e:
-        click.echo(f"Error: {e}")
+    result = get_note_app().delete_note(title)
+    click.echo(result)
